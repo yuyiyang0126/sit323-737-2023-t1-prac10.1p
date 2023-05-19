@@ -1,0 +1,25 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: mongodb-backup
+spec:
+  schedule: "0 0 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: mongodump
+              image: mongo
+              command:
+                - "/bin/sh"
+                - "-c"
+                - "mongodump --uri=mongodb://admin:admin@localhost:32100/?authMechanism=DEFAULT --db=backup --archive=/backup/backup-$(date '+%Y-%m-%d-%H-%M-%S').archive"
+              volumeMounts:
+                - name: backup
+                  mountPath: /backup
+          volumes:
+            - name: backup
+              persistentVolumeClaim:
+                claimName: mongo-pvc
+          restartPolicy: OnFailure

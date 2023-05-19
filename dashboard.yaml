@@ -1,0 +1,36 @@
+apiVersion: monitoring.cnrm.cloud.google.com/v1beta1
+kind: MonitoringDashboard
+metadata:
+  name: my-dashboard
+spec:
+  displayName: My Dashboard
+  templateData:
+    project: sit323-10p
+  widgetTemplates:
+    - name: request_count
+      xyChart:
+        dataSets:
+          - timeSeriesQuery:
+              timeSeriesFilter: resource.type = "k8s_container" AND metric.type = "container.googleapis.com/container/cpu/usage_time" AND metric.label.container_name = "my-container"
+              unit: "1"
+        xAxis:
+          label: Time
+        yAxis:
+          label: Requests Count
+    - name: latency
+      xyChart:
+        dataSets:
+          - timeSeriesQuery:
+              timeSeriesFilter: resource.type = "k8s_container" AND metric.type = "container.googleapis.com/container/latency" AND metric.label.container_name = "my-container"
+              unit: "ms"
+        xAxis:
+          label: Time
+        yAxis:
+          label: Latency (ms)
+  widgets:
+    - name: requests_widget
+      title: Request Count
+      widgetTemplate: request_count
+    - name: latency_widget
+      title: Latency
+      widgetTemplate: latency
