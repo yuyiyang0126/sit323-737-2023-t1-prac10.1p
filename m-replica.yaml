@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: replicaset
+  labels:
+    app: myapp
+    tier: frontend
+spec:
+  # modify replicas according to your case
+  replicas: 2
+  selector:
+    matchLabels:
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        tier: frontend
+    spec:
+      containers:
+      - name: my-microservice
+        image: australia-southeast2-docker.pkg.dev/sit323-23t1-eric-yu-a64a39b/calculator-docker-repo/calculator-image:tag1
+        ports:
+        - containerPort: 3000
